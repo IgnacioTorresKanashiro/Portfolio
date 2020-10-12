@@ -1,0 +1,6 @@
+tucomerciofinal.000webhostapp.com
+
+define("DBUSER", "id10213657_uces");
+define("DBPASS", "finalweb1");
+define("DBHOST", "localhost");
+define("DBBASE", "id10213657_finalweb1");

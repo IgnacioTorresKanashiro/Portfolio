@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>CLUB DEL COMIC - Perfil de usuario</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/estilosLogin.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+<body data-ng-app="perfilApp" data-ng-controller="perfilCtrl">
+
+    <header>
+        <nav class="navbar navbar-expand navbar-light bg-light">
+            <a class="navbar-brand" href="principaladmin.html">CLUB DEL COMIC</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExample02">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="principaladmin.html">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="productosadmin.html">Productos</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="perfiladmin.html">Perfil<span class="sr-only">(actual)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html" data-ng-click="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div id="">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-7">
+              <h1>Perfil de usuario</h1>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="container col-md-6 pull-left">
+    <div class="form-group">
+        <label class="col-form-label-lg">Nombre</label>
+        <div>{{nombre}}</div>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label-lg">Apellido</label>
+        <div>{{apellido}}</div>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label-lg">Teléfono</label>
+        <div>{{telefono}}</div>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label-lg">Localidad</label>
+        <div>{{localidad}}</div>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label-lg">Email</label>
+        <div>{{email}}</div>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label-lg">Foto de perfil actual</label>
+        <div><img ng-src="{{foto}}" style="width:200px;height:150px"></div>
+    </div>
+</div>
+<form name="upload" data-ng-submit="cargarImagen(idUsr)" class="col-md-6 pull-right">
+    <div class="form-group">
+        <label class="col-form-label-lg">Ingrese una foto de perfil</label><br>
+        <input type="url" data-ng-model="urlImagen" /><br>
+        <input class="d-block btn btn-primary" type="submit" data-ng-disabled="!urlImagen" value="Subir Foto" onclick="location.href='perfiladmin.html';">
+        <img data-ng-src="{{urlImagen}}" class="img-responsive" data-ng-show="urlImagen" style="width:200px;height:200"/>
+    </div>
+</form>
+
+<script src="js/perfil.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

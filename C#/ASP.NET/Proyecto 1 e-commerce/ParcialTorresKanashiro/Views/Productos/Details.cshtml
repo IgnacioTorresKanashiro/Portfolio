@@ -1,0 +1,59 @@
+﻿@model ParcialTorresKanashiro.Models.Producto
+
+@{
+    ViewBag.Title = "El club del comic - Detalle del producto";
+}
+
+<h2>Detalle del producto</h2>
+
+<div>
+    <h4>Producto</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+            @*<label>Nombre</label>*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.editorial)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.editorial)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.precio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.precio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cantidad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cantidad)
+        </dd>
+
+        <dt>
+            <img src="~/Img/@Model.foto" style="width: 100px; height:100px;" />
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.foto)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Volver al listado de productos", "Index")
+</p>

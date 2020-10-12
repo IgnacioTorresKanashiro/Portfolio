@@ -1,0 +1,494 @@
+#include <allegro.h>
+#include <stdlib.h>
+#include <time.h>
+#include "inicia.h"
+#include "disparos.h"
+
+#define ANCHO 600
+#define ALTO  600
+
+using namespace std;
+
+class Nave
+{
+    public:
+        Nave();
+        virtual ~Nave();
+
+        int x, y;
+        int n_disp;
+        int max_disp;
+        int tick;
+        int ancho_b, alto_b; //Dimensiones de la bala
+        int ancho_p, alto_p; //Dimensiones del personaje
+        int dir_bala;
+        int tipo; //Diferencia a la nave de los enemigos
+        int vida;
+
+        BITMAP* img_nav;
+        BITMAP* img_bala;
+        BITMAP* exp_enem;
+
+        void inicia(char* ruta_nave, char* ruta_bala, int _ancho_b, int _alto_b, int _ancho_p, int _alto_p, int _x, int _y, int _dir_bala, int _tipo, int _vida);
+        bool temporizador(int tiempo);
+        void pinta(BITMAP* buffer, int ix, int iy);
+        void mueve();
+        void dispara(struct Balas disparos[], BITMAP* buffer);
+};
+
+Nave::Nave()
+{
+    //ctor
+}
+
+Nave::~Nave()
+{
+    //dtor
+}
+
+void Nave::inicia(char* ruta_nave, char* ruta_bala, int _ancho_b, int _alto_b, int _ancho_p, int _alto_p, int _x, int _y, int _dir_bala, int _tipo, int _vida)
+{
+    x=_x;
+    y=_y;
+    n_disp=0; //Cantidad de disparos ejecutados
+    max_disp=2; //Cantidad máxima de disparos
+    tick=0;
+    ancho_b=_ancho_b;
+    alto_b=_alto_b;
+    ancho_p=_ancho_p;
+    alto_p=_alto_p;
+    img_nav=load_bitmap(ruta_nave, NULL);
+    img_bala=load_bitmap(ruta_bala, NULL);
+    dir_bala=_dir_bala;
+    tipo=_tipo;
+    vida=_vida;
+    exp_enem=load_bitmap("Recursos/pum_enemigo.bmp", NULL);
+}
+
+bool Nave::temporizador(int tiempo) //Un temporizador para evitar que todas las balas se creen juntas y puedan estar espaciadas, espera X iteraciones de tiempo para devolver verdadero, sirve para que las cosas vayan más rápido o más lento
+{
+    tick++; //Para la siguiente iteración donde se presiona el espacio es 1 y entonces no se crea la bala
+
+    if(tick==tiempo) //Espera hasta 5 para que se pueda crear otra bala
+    {
+        tick=0;
+        return true;
+    }
+
+    return false;
+}
+
+void Nave::pinta(BITMAP* buffer, int ix, int iy)
+{
+    masked_blit(img_nav, buffer, ix*ancho_p, iy*alto_p, x, y, ancho_p, alto_p); //Imprimo la imágen de la nave sobre el buffer, multiplico por las medidas de la imágen para saber desde dónde tomar lo que debe mostrar
+}
+
+void Nave::mueve()
+{
+    if(key[KEY_LEFT])  //Para mover la nave se resta o suma sobre el eje X
+        {
+            x-=5;
+        }
+
+        if(key[KEY_RIGHT])
+        {
+            x+=5;
+        }
+}
+
+
+
+void Nave::dispara(struct Balas disparos[], BITMAP* buffer)
+{
+    if(tipo!=0) //Permite que solo se creen las balas de los enemigos y que no se repita la de la nave
+    {
+        crear_bala(n_disp, max_disp, disparos, x, y, dir_bala);
+    }
+        pintar_bala(n_disp, max_disp, disparos, buffer, img_bala, ancho_b, alto_b); //Pinta constantemente las balas de las dimensiones de la misma
+        elimina_bala(n_disp, max_disp, disparos, ANCHO, ALTO); //Elimina las balas que se pasan del límite de la pantalla
+
+}
+
+class Escudo
+{
+   public:
+    int x, y;
+    int dan; //Vida del escudo
+    int tipo; //Que parte del escudo está dañado
+
+    void iniciar_escudo(Escudo muros[]);
+    void pintar_escudos(Escudo ES[], BITMAP* img_mur, BITMAP* buffer);
+};
+
+
+void Escudo::iniciar_escudo(Escudo muros[])
+{
+    char pos_muros[3][22] = {      //Son los muros dibujados, a cada parte se le asigna un tipo distinto
+       "AEC   AEC   AEC   AEC",
+       "B D   B D   B D   B D",
+     };
+
+     int r=0;
+     for(int i=0;i<21;i++)
+     {
+         for(int j=0;j<2;j++)
+         {
+             if(pos_muros[j][i]!=' ')
+             {
+                 muros[r].x=90+i*20; //Asigna las coordenadas del muro con las dimensiones de la imágen
+                 muros[r].y=450+j*15;
+                 muros[r].dan=0;
+                 if(pos_muros[j][i]=='A')
+                 {
+                     muros[r].tipo=0;
+                 }
+
+                 if(pos_muros[j][i]=='B')
+                 {
+                     muros[r].tipo=1;
+                 }
+                 if(pos_muros[j][i]=='C')
+                 {
+                     muros[r].tipo=2;
+                 }
+
+                 if(pos_muros[j][i]=='D')
+                 {
+                     muros[r].tipo=3;
+                 }
+
+                 if(pos_muros[j][i]=='E')
+                 {
+                     muros[r].tipo=4;
+                 }
+                 r++;
+            }
+        }
+    }
+}
+
+void Escudo::pintar_escudos(Escudo ES[], BITMAP* img_mur, BITMAP* buffer)
+{
+    for(int i=0;i<20;i++)
+    {
+        if(ES[i].dan!=3) //Pinta siempre y cuando el escudo todavía tenga vida
+        {
+            masked_blit(img_mur, buffer, ES[i].dan*20, ES[i].tipo*16, ES[i].x, ES[i].y, 20, 16); //El daño dicta qué imágen de los daños muestra, el tipo es qué parte del escudo imprime
+
+        }
+    }
+}
+
+
+
+void acomoda_enemigos(Nave E[])
+{
+    int indice= -1;
+    int _tipo=0; //Define que versión de los enemigos va a aparecer
+
+    for(int i=0;i<5;i++) //Las filas de enemigos
+    {
+        _tipo++;
+        if(_tipo==4)
+        {
+            _tipo=1;
+        }
+        for(int j=0;j<11;j++) //Las columnas de enemigos
+        {
+            indice++;
+            E[indice].inicia("Recursos/enemigos.bmp", "Recursos/Bala_enem.bmp", 6, 12, 25, 20, 140+j*30, 130+i*24, 8, _tipo, 1); //Multiplico para hacer espacios iguales entre todos los enemigos
+        }
+    }
+}
+
+void pintar_enemigo(Nave E[], BITMAP* buffer, int mov)
+{
+    int indice= -1;
+    for(int i=0;i<5;i++) //Las filas de enemigos
+    {
+        for(int j=0;j<11;j++) //Las columnas de enemigos
+        {
+            indice++;
+            if(E[indice].vida>0)
+            {
+                E[indice].pinta(buffer, mov, E[indice].tipo-1);
+            }
+        }
+    }
+}
+
+void portada(BITMAP* p) //Imprime el menú
+{
+    int parpadeo=0;
+    int y=0;
+    int cont=0; //Controla los tiempos para cambiar entre las imágenes para el parpadeo
+    bool salida=false;
+    bool carga=false;
+
+    while(!salida)
+    {
+        if(parpadeo<25) //Genera el efecto de parpadeo del menu, espera 25 ciclos para cambiar entre una y otra
+        {
+            blit(p, screen, 0, y, 0, 100, 600, 400);
+        }
+
+        else
+        {
+            blit(p, screen, 600, y, 0, 100, 600, 400);
+        }
+
+        if(key[KEY_ENTER])
+        {
+            y=400; //Esto pasa a que imprima las imágenes de cargando porque están en el eje y 400
+            carga=true; //Pasa a estar cargando el juego
+        }
+
+        if(carga)
+        {
+            cont++;
+        }
+
+        if(cont>400) //Espera 400 ciclos para que le de tiempo al jugador a leer las instrucciones del juego
+        {
+            salida=true;
+        }
+
+        rest(5); //Da 5 milisegundos entre cada iteración
+        if(++parpadeo==50)
+        {
+            parpadeo=0;
+        }
+    }
+
+    clear_to_color(screen, 0x000000);
+}
+
+void imprimir_fondo(BITMAP* fondo, BITMAP* buffer) //Imprime el fondo del juego
+{
+    masked_blit(fondo, buffer, 0, 0, 0, 0, 600, 600); //Masked respeta transparencias de la imágen
+}
+
+bool elimina_bala_objeto(Nave& N, Nave& E, struct Balas B[])
+{
+    if (N.n_disp>0 && N.n_disp<N.max_disp)
+    {
+        for (int cont=1;cont<=N.n_disp;cont++)
+        {
+            if(colision(E.x, E.y, E.ancho_p, E.alto_p, B[cont].x, B[cont].y, N.ancho_p, N.alto_p) && E.vida>0) //La vida tiene que ser mayor que 0 para que la bala no choque con enemigos invisibles
+            {
+                eliminar(B, N.n_disp, cont);
+                E.vida--; //Cuando la bala colisiona con el enemigo o la nave le resta vida
+                return true;
+            }
+        }
+        return false;
+    }
+    return false;
+}
+
+void eliminar_bala_escudo(Nave& N, Escudo ES[], struct Balas B[])
+{
+    if (N.n_disp>0 && N.n_disp<N.max_disp)
+    {
+        for (int cont=1;cont<=N.n_disp;cont++)
+        {
+            for(int i=0;i<20;i++)
+            {
+                if(colision(ES[i].x, ES[i].y, 20, 16, B[cont].x, B[cont].y, N.ancho_b, N.alto_b) && ES[i].dan<3) //Si hubo una colisión entre la bala y el muro y el muro todavía tiene vida
+                {
+                    eliminar(B, N.n_disp, cont);
+                    ES[i].dan++; //El escudo recibe daño
+                }
+            }
+        }
+    }
+}
+
+void crear_bala_enemigo(Nave E[], int &azar)
+{
+    int cont=0;
+    if(E[azar].n_disp==0) //Si un enemigo terminó de disparar elige otro al azar para que dispare
+    {
+        azar=rand()%55;
+        while(E[azar].vida==0) //Si el enemigo que tocó ya no está más sigue buscando enemigos hasta encontrar uno que todavía exista
+        {
+            azar=rand()%55;
+            cont++;
+
+            if(cont==5)
+            {
+                break;
+            }
+
+        }
+    }
+}
+
+void crear_bala_nave(Nave& N, struct Balas disparos[])
+{
+    if(key[KEY_SPACE] && N.temporizador(5))
+        {
+            crear_bala(N.n_disp, N.max_disp, disparos, N.x, N.y, N.dir_bala); //Creo un disparo desde las coordenadas de la nave y la velocidad a la que viaja, es negativa porque las coordenadas están inversas, si es positivo va hacia abajo
+        }
+}
+
+void explosion1(Nave E, BITMAP* buffer) //Muestra en pantalla la explosión del enemigo
+{
+    BITMAP* parche=create_bitmap(25, 20); //Crea un parche del tamaño del enemigo
+    clear_to_color(parche, 0x000000); //Pinta el parche de negro para tapar en donde estaba el enemigo
+    blit(parche, buffer, 0, 0, E.x, E.y, 25, 20); //Pone el parche sobre el enemigo para taparlo
+    masked_blit(E.exp_enem, buffer, 0, 0, E.x-10, E.y, 41, 34); //Se le resta al eje x para que quede bien centrada la explosión porque tiene dimensiones distintas
+}
+
+void explosion2(Nave N, BITMAP* buffer, BITMAP* fondo)
+{
+    BITMAP* parche=create_bitmap(30, 20);
+    clear_to_color(parche, 0x000000);
+
+    for(int j=0;j<6;j++) //Este for permite que se muestren las 3 imágenes que dan el efecto de explosión de la nave, este hace que muestre el efecto varias veces
+    {
+        for(int i=1;i<=2;i++) //Este for marca desde dónde debe tomar la imágen de la nave
+            {
+                blit(parche, buffer, 0, 0, N.x, N.y, 30, 20);
+                masked_blit(N.img_nav, buffer, i*30, 0, N.x, N.y, 30, 20);
+                imprimir_fondo(fondo, buffer);
+                blit(buffer, screen, 0, 0, 0, 0, ANCHO, ALTO); //Imprime todo de vuelta en pantalla para que quede bien
+                rest(50);
+            }
+    }
+}
+
+bool limites(Nave E[], int& dir) //Chequea si los enemigos tocan con el límite de la pantalla
+{
+    for(int i=0;i<55;i++)
+    {
+        if((E[i].x>520 || E[i].x <50) && E[i].vida) //Solamente cuenta a los enemigos que están vivos, si no están más entonces no los cuenta al llegar al límite
+        {
+            dir=-1*dir; //Cambia la dirección del enemigo
+            return true;
+        }
+
+    }
+    return false;
+}
+
+void mover_enemigos(Nave E[], int& mov, int& dir)
+{
+    for(int i=0;i<55;i++)
+    {
+        E[i].x+=dir; //Mueve a los enemigos uno a la izquierda o derecha
+    }
+
+    if(++mov==2) //Esto devuelve mov a 1, lo que permite que se alterne entre las 2 imágenes de movimiento de los enemigos
+    {
+        mov=0;
+    }
+
+    if(limites(E, dir)) //Ya llegó al límite
+    {
+        for(int j=0;j<55;j++)
+        {
+            E[j].y+=10; //Los baja diez pixeles
+        }
+
+
+    }
+
+}
+
+
+
+
+
+int main()
+{
+    srand(time(NULL));
+
+    inicia_allegro(ANCHO,ALTO);
+	inicia_audio(70,70);
+
+    BITMAP *buffer = create_bitmap(ANCHO, ALTO);
+    BITMAP *_portada= load_bitmap("Recursos/portada.bmp", NULL);
+    BITMAP *fondo= load_bitmap("Recursos/fondo.bmp", NULL);
+    BITMAP *img_muros= load_bitmap("Recursos/escudos.bmp", NULL);
+
+    portada(_portada);
+
+    Nave N;
+    N.inicia("Recursos/nave.bmp", "Recursos/Bala2.bmp", 6, 12, 30, 20, ANCHO/2, ALTO-70, -8, 0, 3);     //Cargo las imágenes a los búfferes, divido por dos para que la nave aparezca en el medio y como las coordenadas están invertidas resto para subir la posición de la nave
+    Nave E[60];
+    acomoda_enemigos(E);
+    Balas disparos[N.max_disp];
+    Balas disp_E[E[0].max_disp];
+
+    Escudo ES[30];
+    ES[30].iniciar_escudo(ES); //Inicia los escudos
+
+    int azar=rand()%55; //Elige un enemigo al azar de los 55
+    int mov=0; //Esta variable permite el movimiento de los enemigos
+    int dir=-5; //Al ser negativos se mueven para la izquierda y de a 5 pixeles
+    int vel_juego=10; //Dicta la velocidad a la que se mueven los enemigos
+
+    while(!key[KEY_ESC]) //La rutina del juego se sigue ejecutando mientras no se presione la tecla Escape
+    {
+        clear_to_color(buffer, 0x000000); //Limpio el buffer y lo pongo todo en color negro
+        ES[30].pintar_escudos(ES, img_muros, buffer); //Pinta los escudos
+
+        if(E[0].temporizador(vel_juego))
+        {
+            mover_enemigos(E, mov, dir);
+        }
+
+        N.pinta(buffer, 0, 0);
+        N.mueve();
+        crear_bala_nave(N, disparos);
+        N.dispara(disparos, buffer);
+
+        for(int i=0; i<55; i++) //Recorre por los 55 enemigos
+        {
+            if(elimina_bala_objeto(N, E[i], disparos))//Cuando la bala colisiona con la nave elimina la bala
+            {
+                explosion1(E[i], buffer); //Si hubo una colisión que imprima una explosión
+            }
+        }
+        eliminar_bala_escudo(N,ES,disparos);
+
+        pintar_enemigo(E, buffer, mov);
+        crear_bala_enemigo(E, azar);
+        E[azar].dispara(disp_E, buffer); //El enemigo dispara
+
+        if(elimina_bala_objeto(E[azar], N, disp_E)) //Chequea si hubo una colisión de la bala con la nave, y de ser así genera el efecto de explosión
+        {
+            explosion2(N, buffer, fondo);
+        }
+        eliminar_bala_escudo(E[azar],ES,disp_E);
+
+        imprimir_fondo(fondo, buffer);
+        blit(buffer, screen, 0, 0, 0, 0, ANCHO, ALTO); //Imprime el buffer sobre la pantalla desde la coordenada 0 del buffer en la coordenada 0 de la pantalla sobre las dimensiones de la pantalla
+        rest(20); //Hace intervalos de 20 ms
+
+        if(N.vida==0)
+        {
+            break;
+            system("cls");
+        }
+
+        int cont_enem=0;
+        for(int j=0;j<55;j++)
+        {
+            if(E[j].vida==0)
+            {
+                cont_enem++;
+            }
+        }
+        if(cont_enem==55)
+        {
+            break;
+            system("cls");
+        }
+    }
+
+	return 0;
+}
+END_OF_MAIN();
+

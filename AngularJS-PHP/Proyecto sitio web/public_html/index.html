@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CLUB DEL COMIC - Inicio de sesión</title>
+
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/estilosLogin.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+
+</head>
+
+<body data-ng-app="loginApp" data-ng-controller="loginCtrl">
+    <div class="wrapper fadeInDown">
+        <div class="inner-bg">
+            <div class="container col-sm-6" style="margin-top: 5%;">
+                <div class="row">
+<!--                     <div class="text" style="margin-left: 15%;">
+                        <h1><strong>TuMercado.com</strong> Bienvenido</h1>
+                        <div class="description pull-left col-sm-6">
+                            <p>
+                               Comprá y vendé productos al mejor precio.
+                            </p>
+                        </div>
+                        <div class="col-sm-6 pull-right text-right">
+                            <a class="btn btn-link-1" href="registro.html">¡Registrarme!</a>
+                            
+                        </div>
+                    </div> -->
+                    <div class="fadeIn first">
+                        <img src="http://www.clubdelcomic.com.ar/image/data/journal/imagenes/logo_edu.png" style="width:225px;" id="icon" alt="User Icon" />
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 10%;">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>Ingresar</h3>
+                                <p>Completá los siguientes campos</p>
+                            </div>
+                        </div>
+                        <div class="container col-sm-12">
+                            <form name="loginForm"  ng-submit="log(usuario)" novalidate>
+
+                                <div class="form-group fadeIn second" ng-class="{ 'has-error' : loginForm.email.$invalid && !loginForm.email.$pristine }">
+                                    <label>Email</label>
+                                    <input type="text"
+                                    name="email"
+                                    class="form-control"
+                                    ng-model="usuario.email"
+                                    required>
+                                    <p ng-show="loginForm.email.$invalid && !loginForm.email.$pristine" class="help-block">Complete este campo</p>
+                                </div>
+
+                                <div class="form-group fadeIn third" ng-class="{ 'has-error' : loginForm.password.$invalid && !loginForm.password.$pristine }">
+                                    <label>Contraseña</label>
+                                    <input type="password"
+                                    name="password"
+                                    class="form-control"
+                                    ng-model="usuario.password"
+                                    required>
+                                    <p ng-show="loginForm.password.$invalid && !loginForm.password.$pristine" class="help-block">Complete este campo</p>
+                                </div>
+                                <button type="submit" class="btn btn-primary fadeIn fourth" ng-disabled="loginForm.$invalid">Entrar</button>
+                                <a class="btn btn-link-1 underlineHover" href="registro.html">¡Registrarme!</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/login.js"></script>
+    <script src="assets/js/jquery-1.11.1.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.backstretch.min.js"></script>
+    <script src="assets/js/scripts.js"></script>
+</body>
+</html>

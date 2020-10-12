@@ -1,0 +1,50 @@
+﻿@model Dictionary<ParcialTorresKanashiro.Models.Producto, int>
+
+<table class="table">
+    <tr>
+        <th>
+            <label>Producto</label>
+        </th>
+        <th>
+            <label>Precio</label>
+        </th>
+        <th>
+            <label>Cantidad</label>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <label>Subtotal</label>
+        </th>
+    </tr>
+
+    @foreach (KeyValuePair<ParcialTorresKanashiro.Models.Producto, int> item in Model)
+    {
+        <tr>
+            <td>
+                <label>@item.Key.nombre</label>
+            </td>
+            <td>
+                <label>@item.Key.precio</label>
+            </td>
+            <td>
+                <label>@item.Value</label>
+            </td>
+            <td>
+                @Html.ActionLink("Borrar", "EliminarProductoCarrito", new { id = item.Key.id })
+                @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+        @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+        @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+            </td>
+        </tr>
+    }
+    <tr>
+        <td>
+            <label>@ParcialTorresKanashiro.Models.ClaseCarrito.calcularTotal(Model)</label>
+        </td>
+    </tr>
+
+</table>
+
+<a href="~/@Session["idioma"]/Productos/Comprar"><button>Comprar</button></a>
+

@@ -1,0 +1,61 @@
+﻿@model ParcialTorresKanashiro.Models.Usuario
+
+@{
+    Layout = null;
+    ViewBag.Title = "Registrarse";
+}
+
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+
+<body>
+    <div class="wrapper fadeInDown">
+        @using (Html.BeginForm("CrearUsuario", "Usuarios"))
+        {
+            @Html.AntiForgeryToken()
+            <div id="formContent">
+                <span>@ParcialTorresKanashiro.Recursos.MultiLang.FormularioDeRegistro</span>
+                
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+
+                    @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "fadeIn first", placeholder = "Nombre", type = "text" } })
+                    @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="form-group">
+
+                    @Html.EditorFor(model => model.apellido, new { htmlAttributes = new { @class = "fadeIn second", placeholder = "Apellido", type = "text" } })
+                    @Html.ValidationMessageFor(model => model.apellido, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="form-group">
+
+
+                    @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "fadeIn third", placeholder = "Email", type = "email" } })
+                    @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="form-group">
+
+                    @Html.EditorFor(model => model.clave, new { htmlAttributes = new { @class = "fadeIn fourth", placeholder = "Clave", type = "password" } })
+                    @Html.ValidationMessageFor(model => model.clave, "", new { @class = "text-danger" })
+                </div>
+
+                <input type="submit" value="Crear" class="fadeIn fourth center" />
+            </div>
+        }
+    </div>
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+    }
+</body>

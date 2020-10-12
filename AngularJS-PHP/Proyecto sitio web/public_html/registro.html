@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLUB DEL COMIC - Formulario de registro</title>
+
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/estilosLogin.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+  <link rel="shortcut icon" href="assets/ico/favicon2.png">
+
+</head>
+<body>
+  <div class="">
+    <div class="container col-sm-6" style="margin-top: 5%;">
+      <div class="row">
+        <div class="text" style="margin-left: 15%;">
+         <!--  <h1><strong>TuMercado.com</strong> Bienvenido</h1> -->
+         <!--  <div class="description pull-left col-sm-6">
+            <p>
+              Comprá y vendé productos al mejor precio.
+            </p>
+          </div> -->
+          <div class="col-sm-6 pull-right text-right">
+            <a class="btn btn-link-1" href="index.html">Ya estoy registrado</a>
+          </div>
+        </div>
+        <div class="col-sm-12" style="margin-top: 10%;">
+          <div class="form-top">
+            <div class="form-top-left">
+              <h3>Formulario de registro</h3>
+              <p>Completá los siguientes campos</p>
+            </div>
+          </div>
+          <div class="container col-sm-12 wrapper fadeInDown" data-ng-app="registroApp" data-ng-controller="registroCtrl">
+            <form name="registerForm" ng-submit="guardar(usuario)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : registerForm.nombre_usuario.$invalid && !registerForm.nombre_usuario.$pristine }">
+                <label>Nombre</label>
+                <input type="text"
+                name="nombre_usuario"
+                class="form-control"
+                ng-model="usuario.nombre_usuario"
+                required>
+                <p ng-show="registerForm.nombre_usuario.$invalid && !registerForm.nombre_usuario.$pristine" class="help-block">Complete este campo</p>
+              </div>
+
+              <div class="form-group fadeIn first" ng-class="{ 'has-error' : registerForm.apellido.$invalid && !registerForm.apellido.$pristine }">
+                <label>Apellido</label>
+                <input type="text"
+                name="apellido"
+                class="form-control"
+                ng-model="usuario.apellido"
+                required>
+                <p ng-show="registerForm.apellido.$invalid && !registerForm.apellido.$pristine" class="help-block">Complete este campo</p>
+              </div>
+
+              <div class="form-group fadeIn second" ng-class="{ 'has-error' : registerForm.telefono.$invalid && !registerForm.telefono.$pristine }">
+                <label>Telefono</label>
+                <input type="number"
+                name="telefono"
+                class="form-control"
+                ng-model="usuario.telefono"
+                required>
+                <p ng-show="registerForm.telefono.$invalid && !registerForm.telefono.$pristine" class="help-block">Complete este campo</p>
+              </div>
+
+              <div class="form-group fadeIn third" ng-class="{ 'has-error' : registerForm.localidad.$invalid && !registerForm.localidad.$pristine }">
+                <label>Localidad</label>
+                <input type="text"
+                name="localidad"
+                class="form-control"
+                ng-model="usuario.localidad"
+                required>
+                <p ng-show="registerForm.localidad.$invalid && !registerForm.localidad.$pristine" class="help-block">Complete este campo</p>
+              </div>
+
+              <div class="form-group fadeIn fourth" ng-class="{ 'has-error' : registerForm.email.$invalid && !registerForm.email.$pristine }">
+                <label>Email</label>
+                <input type="email"
+                name="email"
+                class="form-control"
+                ng-model="usuario.email"
+                required >
+                <p ng-show="registerForm.email.$invalid && !registerForm.email.$pristine" class="help-block">Asegurese de poner@</p>
+              </div>
+
+              <div class="form-group fadeIn fourth" ng-class="{ 'has-error' : registerForm.password.$invalid && !registerForm.password.$pristine }">
+                <label>Contraseña</label>
+                <input type="text"
+                name="password"
+                class="form-control"
+                ng-model="usuario.password"
+                required>
+                <p ng-show="registerForm.password.$invalid && !registerForm.password.$pristine" class="help-block">Complete este campo</p>
+              </div>
+
+              <button type="submit" class="btn btn-primary fadeIn fourth" ng-disabled="registerForm.$invalid">Registrarme</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="js/registro.js"></script>
+<script src="assets/js/jquery-1.11.1.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<!-- <script src="assets/js/jquery.backstretch.min.js"></script> -->
+<script src="assets/js/scripts.js"></script>
+</body>
+</html>

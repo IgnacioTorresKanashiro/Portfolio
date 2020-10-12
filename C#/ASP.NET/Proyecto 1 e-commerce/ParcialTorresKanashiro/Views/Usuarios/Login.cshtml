@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+@{
+    Layout = null;
+    ViewBag.Title = "Login";
+}
+
+<body>
+
+    @*<div class="container">
+        @using (Html.BeginForm("VerificarUsuario", "Usuarios"))
+        {
+
+            <div class="form-group">
+                <label>Ingrese su email</label>
+                <input type="email" name="email" required />
+                @if (ViewBag.error != null)
+                {<span class="alert-danger">@ViewBag.error</span>}
+            </div>
+            <div class="form-group">
+                <label>Ingrese su clave</label>
+                <input type="password" name="clave" required />
+            </div>
+            <div class="form-group">
+                <button type="submit">Loguearse</button>
+            </div>
+        }
+
+
+    </div>*@
+
+
+
+
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <!-- Tabs Titles -->
+            <!-- Icon -->
+            <div class="fadeIn first">
+                <img src="http://www.clubdelcomic.com.ar/image/data/journal/imagenes/logo_edu.png" style="width:225px;" id="icon" alt="User Icon" />
+            </div>
+            <!-- Login Form -->
+            @using (Html.BeginForm("VerificarUsuario", "Usuarios"))
+            {
+                <p>@DateTime.Now.ToString()</p>
+                <input type="email" id="login" class="fadeIn second" name="email" placeholder="Email">
+                <input type="password" id="password" class="fadeIn third" name="clave" placeholder="@ParcialTorresKanashiro.Recursos.MultiLang.Clave">
+                <input type="submit" class="fadeIn fourth" value="@ParcialTorresKanashiro.Recursos.MultiLang.Ingresar">
+                if (Session["idioma"].ToString() == "es-AR")
+                {
+                    @Html.ActionLink("English", "Login", "Usuarios", new { idioma = "en-US" }, null);
+                }
+                else
+                {
+                    @Html.ActionLink("Español", "Login", "Usuarios", new { idioma = "es-AR" }, null);
+                }
+
+
+
+                if (ViewBag.error != null)
+                {<span class="alert-danger d-block">@ViewBag.error</span>}
+        }
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover" href="~/@Session["idioma"]/Usuarios/RegistrarUsuario">@ParcialTorresKanashiro.Recursos.MultiLang.Registrarse</a>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>
